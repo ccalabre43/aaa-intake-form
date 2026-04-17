@@ -1,26 +1,33 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Toaster } from "@/components/ui/sonner";
+import { IntakeForm } from "@/components/intake/IntakeForm";
 
 export const Route = createFileRoute("/")({
   component: Index,
+  head: () => ({
+    meta: [
+      { title: "A3 Creative Intake | AAA Life" },
+      {
+        name: "description",
+        content:
+          "Submit a creative services request to the A3 team — capture audience, deliverables, timing, and assets in one form.",
+      },
+      { property: "og:title", content: "A3 Creative Intake | AAA Life" },
+      {
+        property: "og:description",
+        content: "Submit a creative services request to the A3 team.",
+      },
+    ],
+  }),
 });
 
-// IMPORTANT: Replace this placeholder. For sites with multiple pages (About, Services, Contact, etc.),
-// create separate route files (about.tsx, services.tsx, contact.tsx) — don't put all pages in this file.
-function PlaceholderIndex() {
-  return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
-  );
-}
-
 function Index() {
-  return <PlaceholderIndex />;
+  return (
+    <main className="min-h-screen bg-background">
+      <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 sm:py-14">
+        <IntakeForm />
+      </div>
+      <Toaster richColors position="top-center" />
+    </main>
+  );
 }
