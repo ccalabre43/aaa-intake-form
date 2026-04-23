@@ -159,6 +159,16 @@ export function IntakeForm() {
           <FieldLabel>Please address these possible blockers to your request.</FieldLabel>
           <ul className="space-y-2">
             <li className="flex items-center gap-3">
+              <Checkbox id="task-attention" className="border-destructive data-[state=checked]:bg-destructive data-[state=checked]:text-destructive-foreground" />
+              <button
+                type="button"
+                onClick={() => setAttentionModalOpen(true)}
+                className="text-sm font-medium text-destructive underline underline-offset-4 hover:opacity-80 cursor-pointer text-left"
+              >
+                Task needs attention
+              </button>
+            </li>
+            <li className="flex items-center gap-3">
               <Checkbox id="task-recent" />
               <label htmlFor="task-recent" className="text-sm text-foreground cursor-pointer">
                 Most recent task
@@ -170,14 +180,21 @@ export function IntakeForm() {
                 Previous task
               </label>
             </li>
-            <li className="flex items-center gap-3">
-              <Checkbox id="task-attention" className="border-destructive data-[state=checked]:bg-destructive data-[state=checked]:text-destructive-foreground" />
-              <label htmlFor="task-attention" className="text-sm font-medium text-destructive cursor-pointer">
-                Task needs attention
-              </label>
-            </li>
           </ul>
         </div>
+
+        <Dialog open={attentionModalOpen} onOpenChange={setAttentionModalOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle className="text-destructive">Task needs attention</DialogTitle>
+              <DialogDescription>
+                You should contact &lt;firstName, lastName&gt; before moving forward with this
+                task. You should also fill out an additional explanation if needed.
+              </DialogDescription>
+            </DialogHeader>
+            <Textarea rows={4} placeholder="Additional explanation (optional)" />
+          </DialogContent>
+        </Dialog>
       </SectionCard>
 
       {/* 2. General information */}
