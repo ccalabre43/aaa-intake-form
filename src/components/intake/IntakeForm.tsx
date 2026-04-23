@@ -72,7 +72,7 @@ export function IntakeForm() {
         style={{ background: "var(--gradient-hero)" }}
       >
         <p className="text-xs font-semibold uppercase tracking-widest text-primary-foreground/80">
-          A3 CREATIVE MSERVICES
+          A3 MARKETING TEAM SERVICE REQUEST
         </p>
         <h1 className="mt-2 text-3xl font-semibold leading-tight sm:text-4xl">
           Creative Intake Request
