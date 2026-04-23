@@ -155,39 +155,46 @@ export function IntakeForm() {
                 </SelectContent>
               </Select>
             </div>
+            <div className="space-y-3 rounded-xl border bg-muted/30 p-4">
+              <FieldLabel>Please address these possible blockers to your request.</FieldLabel>
+              <ul className="space-y-2">
+                <li className="flex items-center gap-3">
+                  <Checkbox id="task-attention" className="border-destructive data-[state=checked]:bg-destructive data-[state=checked]:text-destructive-foreground" />
+                  <button
+                    type="button"
+                    onClick={() => setAttentionModalOpen(true)}
+                    className="text-sm font-medium text-destructive underline underline-offset-4 hover:opacity-80 cursor-pointer text-left"
+                  >
+                    Task needs attention
+                  </button>
+                </li>
+                <li className="flex items-center gap-3">
+                  <Checkbox id="task-recent" />
+                  <label htmlFor="task-recent" className="text-sm text-foreground cursor-pointer">
+                    Most recent task
+                  </label>
+                </li>
+                <li className="flex items-center gap-3">
+                  <Checkbox id="task-previous" />
+                  <label htmlFor="task-previous" className="text-sm text-foreground cursor-pointer">
+                    Previous task
+                  </label>
+                </li>
+              </ul>
+            </div>
           </div>
-          <div className="space-y-2">
+          <div className="space-y-3">
             <FieldLabel>Upload your creative brief here</FieldLabel>
-            <FileDrop files={briefFiles} onChange={setBriefFiles} />
+            <FileDrop files={briefFiles} onChange={setBriefFiles} extraHeight={20} />
+            <div className="flex gap-2 sm:justify-end pt-1">
+              <Button type="button" variant="outline" onClick={() => setBriefFiles([])}>
+                Reset
+              </Button>
+              <Button type="button" className="min-w-[160px]">
+                Submit to Workfront
+              </Button>
+            </div>
           </div>
-        </div>
-
-        <div className="mt-6 space-y-3 rounded-xl border bg-muted/30 p-4">
-          <FieldLabel>Please address these possible blockers to your request.</FieldLabel>
-          <ul className="space-y-2">
-            <li className="flex items-center gap-3">
-              <Checkbox id="task-attention" className="border-destructive data-[state=checked]:bg-destructive data-[state=checked]:text-destructive-foreground" />
-              <button
-                type="button"
-                onClick={() => setAttentionModalOpen(true)}
-                className="text-sm font-medium text-destructive underline underline-offset-4 hover:opacity-80 cursor-pointer text-left"
-              >
-                Task needs attention
-              </button>
-            </li>
-            <li className="flex items-center gap-3">
-              <Checkbox id="task-recent" />
-              <label htmlFor="task-recent" className="text-sm text-foreground cursor-pointer">
-                Most recent task
-              </label>
-            </li>
-            <li className="flex items-center gap-3">
-              <Checkbox id="task-previous" />
-              <label htmlFor="task-previous" className="text-sm text-foreground cursor-pointer">
-                Previous task
-              </label>
-            </li>
-          </ul>
         </div>
 
         <Dialog open={attentionModalOpen} onOpenChange={setAttentionModalOpen}>

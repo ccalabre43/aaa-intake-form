@@ -5,9 +5,10 @@ import { cn } from "@/lib/utils";
 interface FileDropProps {
   files: File[];
   onChange: (files: File[]) => void;
+  extraHeight?: number;
 }
 
-export function FileDrop({ files, onChange }: FileDropProps) {
+export function FileDrop({ files, onChange, extraHeight = 0 }: FileDropProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [drag, setDrag] = useState(false);
 
@@ -34,6 +35,7 @@ export function FileDrop({ files, onChange }: FileDropProps) {
         onDragLeave={() => setDrag(false)}
         onDrop={onDrop}
         onClick={() => inputRef.current?.click()}
+        style={extraHeight ? { paddingTop: `calc(2.5rem + ${extraHeight / 2}px)`, paddingBottom: `calc(2.5rem + ${extraHeight / 2}px)` } : undefined}
         className={cn(
           "flex flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed px-6 py-10 text-center cursor-pointer transition-colors",
           drag
