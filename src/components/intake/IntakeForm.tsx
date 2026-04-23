@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -144,6 +145,30 @@ export function IntakeForm() {
               </SelectContent>
             </Select>
           </div>
+        </div>
+
+        <div className="mt-6 space-y-3 rounded-xl border bg-muted/30 p-4">
+          <FieldLabel>Current Tasks</FieldLabel>
+          <ul className="space-y-2">
+            <li className="flex items-center gap-3">
+              <Checkbox id="task-recent" />
+              <label htmlFor="task-recent" className="text-sm text-foreground cursor-pointer">
+                Most recent task
+              </label>
+            </li>
+            <li className="flex items-center gap-3">
+              <Checkbox id="task-previous" />
+              <label htmlFor="task-previous" className="text-sm text-foreground cursor-pointer">
+                Previous task
+              </label>
+            </li>
+            <li className="flex items-center gap-3">
+              <Checkbox id="task-attention" className="border-destructive data-[state=checked]:bg-destructive data-[state=checked]:text-destructive-foreground" />
+              <label htmlFor="task-attention" className="text-sm font-medium text-destructive cursor-pointer">
+                Task needs attention
+              </label>
+            </li>
+          </ul>
         </div>
       </SectionCard>
 
