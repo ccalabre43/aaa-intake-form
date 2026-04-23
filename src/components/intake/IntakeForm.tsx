@@ -148,7 +148,7 @@ export function IntakeForm() {
         </div>
 
         <div className="mt-6 space-y-3 rounded-xl border bg-muted/30 p-4">
-          <FieldLabel>Current Tasks</FieldLabel>
+          <FieldLabel>Please address these possible blockers to your request.</FieldLabel>
           <ul className="space-y-2">
             <li className="flex items-center gap-3">
               <Checkbox id="task-recent" />
