@@ -41,6 +41,7 @@ export function IntakeForm() {
   const [submitted, setSubmitted] = useState<{ data: IntakeData; files: File[] } | null>(
     null
   );
+  const [attentionModalOpen, setAttentionModalOpen] = useState(false);
 
   const set = <K extends keyof IntakeData>(key: K, value: IntakeData[K]) =>
     setData((prev) => ({ ...prev, [key]: value }));
