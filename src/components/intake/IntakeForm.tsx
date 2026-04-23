@@ -128,7 +128,7 @@ export function IntakeForm() {
               <SelectTrigger id="requestorJobFunction">
                 <SelectValue placeholder="Select your job function" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="[&_[role=option]]:focus:bg-sky-400/20 [&_[role=option]]:focus:text-foreground [&_[role=option][data-highlighted]]:bg-sky-400/20 [&_[role=option][data-highlighted]]:text-foreground">
                 <SelectItem value="Executive Leadership">Executive Leadership</SelectItem>
                 <SelectItem value="Marketing">Marketing</SelectItem>
                 <SelectItem value="Sales">Sales</SelectItem>
