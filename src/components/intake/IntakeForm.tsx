@@ -38,6 +38,7 @@ const EXTERNAL_OPTS = ["Clubs", "Policy Holders", "Members", "None"];
 export function IntakeForm() {
   const [data, setData] = useState<IntakeData>(initialIntake);
   const [files, setFiles] = useState<File[]>([]);
+  const [briefFiles, setBriefFiles] = useState<File[]>([]);
   const [submitted, setSubmitted] = useState<{ data: IntakeData; files: File[] } | null>(
     null
   );
@@ -114,44 +115,50 @@ export function IntakeForm() {
       {/* 1. Requester */}
       <SectionCard step={1} title="Requester" description="Who is submitting this request.">
         <div className="grid gap-5 md:grid-cols-2">
-          <div className="space-y-2">
-            <FieldLabel htmlFor="requestedBy" required>
-              Requested By
-            </FieldLabel>
-            <Input
-              id="requestedBy"
-              value={data.requestedBy}
-              onChange={(e) => set("requestedBy", e.target.value)}
-              placeholder="Your full name"
-            />
+          <div className="space-y-5">
+            <div className="space-y-2">
+              <FieldLabel htmlFor="requestedBy" required>
+                Requested By
+              </FieldLabel>
+              <Input
+                id="requestedBy"
+                value={data.requestedBy}
+                onChange={(e) => set("requestedBy", e.target.value)}
+                placeholder="Your full name"
+              />
+            </div>
+            <div className="space-y-2">
+              <FieldLabel htmlFor="requestorJobFunction" required>
+                Requestor Job Function
+              </FieldLabel>
+              <Select
+                value={data.requestorJobFunction}
+                onValueChange={(v) => set("requestorJobFunction", v)}
+              >
+                <SelectTrigger id="requestorJobFunction">
+                  <SelectValue placeholder="Select your job function" />
+                </SelectTrigger>
+                <SelectContent className="[&_[role=option]]:focus:bg-sky-400/20 [&_[role=option]]:focus:text-foreground [&_[role=option][data-highlighted]]:bg-sky-400/20 [&_[role=option][data-highlighted]]:text-foreground">
+                  <SelectItem value="Executive Leadership">Executive Leadership</SelectItem>
+                  <SelectItem value="Marketing">Marketing</SelectItem>
+                  <SelectItem value="Sales">Sales</SelectItem>
+                  <SelectItem value="Product">Product</SelectItem>
+                  <SelectItem value="Operations">Operations</SelectItem>
+                  <SelectItem value="Human Resources">Human Resources</SelectItem>
+                  <SelectItem value="Finance">Finance</SelectItem>
+                  <SelectItem value="Information Technology">Information Technology</SelectItem>
+                  <SelectItem value="Legal & Compliance">Legal & Compliance</SelectItem>
+                  <SelectItem value="Customer Service">Customer Service</SelectItem>
+                  <SelectItem value="Claims">Claims</SelectItem>
+                  <SelectItem value="Underwriting">Underwriting</SelectItem>
+                  <SelectItem value="Other">Other</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
           <div className="space-y-2">
-            <FieldLabel htmlFor="requestorJobFunction" required>
-              Requestor Job Function
-            </FieldLabel>
-            <Select
-              value={data.requestorJobFunction}
-              onValueChange={(v) => set("requestorJobFunction", v)}
-            >
-              <SelectTrigger id="requestorJobFunction">
-                <SelectValue placeholder="Select your job function" />
-              </SelectTrigger>
-              <SelectContent className="[&_[role=option]]:focus:bg-sky-400/20 [&_[role=option]]:focus:text-foreground [&_[role=option][data-highlighted]]:bg-sky-400/20 [&_[role=option][data-highlighted]]:text-foreground">
-                <SelectItem value="Executive Leadership">Executive Leadership</SelectItem>
-                <SelectItem value="Marketing">Marketing</SelectItem>
-                <SelectItem value="Sales">Sales</SelectItem>
-                <SelectItem value="Product">Product</SelectItem>
-                <SelectItem value="Operations">Operations</SelectItem>
-                <SelectItem value="Human Resources">Human Resources</SelectItem>
-                <SelectItem value="Finance">Finance</SelectItem>
-                <SelectItem value="Information Technology">Information Technology</SelectItem>
-                <SelectItem value="Legal & Compliance">Legal & Compliance</SelectItem>
-                <SelectItem value="Customer Service">Customer Service</SelectItem>
-                <SelectItem value="Claims">Claims</SelectItem>
-                <SelectItem value="Underwriting">Underwriting</SelectItem>
-                <SelectItem value="Other">Other</SelectItem>
-              </SelectContent>
-            </Select>
+            <FieldLabel>Upload your creative brief here</FieldLabel>
+            <FileDrop files={briefFiles} onChange={setBriefFiles} />
           </div>
         </div>
 
