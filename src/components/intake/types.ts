@@ -19,6 +19,7 @@ export interface IntakeData {
 
 export const initialIntake: IntakeData = {
   requestedBy: "",
+  requestorJobFunction: "",
   communicationType: "",
   generalAdditionalInfo: "",
   backgroundPurpose: "",
@@ -37,6 +38,7 @@ export const initialIntake: IntakeData = {
 
 export const REQUIRED_FIELDS: (keyof IntakeData)[] = [
   "requestedBy",
+  "requestorJobFunction",
   "communicationType",
   "backgroundPurpose",
   "projectSummary",
