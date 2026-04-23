@@ -2,6 +2,13 @@ import { useMemo, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { toast } from "sonner";
 import { SectionCard } from "./SectionCard";
 import { FieldLabel } from "./FieldLabel";
@@ -97,16 +104,46 @@ export function IntakeForm() {
 
       {/* 1. Requester */}
       <SectionCard step={1} title="Requester" description="Who is submitting this request.">
-        <div className="space-y-2">
-          <FieldLabel htmlFor="requestedBy" required>
-            Requested By
-          </FieldLabel>
-          <Input
-            id="requestedBy"
-            value={data.requestedBy}
-            onChange={(e) => set("requestedBy", e.target.value)}
-            placeholder="Your full name"
-          />
+        <div className="grid gap-5 md:grid-cols-2">
+          <div className="space-y-2">
+            <FieldLabel htmlFor="requestedBy" required>
+              Requested By
+            </FieldLabel>
+            <Input
+              id="requestedBy"
+              value={data.requestedBy}
+              onChange={(e) => set("requestedBy", e.target.value)}
+              placeholder="Your full name"
+            />
+          </div>
+          <div className="space-y-2">
+            <FieldLabel htmlFor="requestorJobFunction" required>
+              Requestor Job Function
+            </FieldLabel>
+            <Select
+              value={data.requestorJobFunction}
+              onValueChange={(v) => set("requestorJobFunction", v)}
+            >
+              <SelectTrigger id="requestorJobFunction">
+                <SelectValue placeholder="Select your job function" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Executive Leadership">Executive Leadership</SelectItem>
+                <SelectItem value="Marketing">Marketing</SelectItem>
+                <SelectItem value="Sales">Sales</SelectItem>
+                <SelectItem value="Product">Product</SelectItem>
+                <SelectItem value="Operations">Operations</SelectItem>
+                <SelectItem value="Human Resources">Human Resources</SelectItem>
+                <SelectItem value="Finance">Finance</SelectItem>
+                <SelectItem value="Information Technology">Information Technology</SelectItem>
+                <SelectItem value="Legal & Compliance">Legal & Compliance</SelectItem>
+                <SelectItem value="Customer Service">Customer Service</SelectItem>
+                <SelectItem value="Claims">Claims</SelectItem>
+                <SelectItem value="Underwriting">Underwriting</SelectItem>
+                <SelectItem value="Other">Other</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
       </SectionCard>
 
