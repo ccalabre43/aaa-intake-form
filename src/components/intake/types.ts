@@ -1,5 +1,6 @@
 export interface IntakeData {
   requestedBy: string;
+  requestorJobFunction: string;
   communicationType: string;
   generalAdditionalInfo: string;
   backgroundPurpose: string;
