@@ -162,7 +162,7 @@ export function IntakeForm() {
                   : "pointer-events-none hidden opacity-0"
               }`}
             >
-              <FieldLabel>Please address these possible blockers to your request.</FieldLabel>
+              <FieldLabel>Please address these possible blockers:</FieldLabel>
               <ul className="space-y-2">
                 <li className="flex items-center gap-3">
                   <Checkbox id="task-attention" className="border-destructive data-[state=checked]:bg-destructive data-[state=checked]:text-destructive-foreground" />
