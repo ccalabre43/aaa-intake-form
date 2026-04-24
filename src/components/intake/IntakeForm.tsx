@@ -113,7 +113,7 @@ export function IntakeForm() {
       </div>
 
       {/* 1. Requester */}
-      <SectionCard step={1} title="Requester" description="Who is submitting this request.">
+      <SectionCard step={1} title="Requester" description="Submit your request by filling out the information below. You can also submit a brief if you have one.">
         <div className="grid gap-5 md:grid-cols-2">
           <div className="space-y-5">
             <div className="space-y-2">
