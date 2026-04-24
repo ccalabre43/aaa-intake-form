@@ -155,7 +155,11 @@ export function IntakeForm() {
                 </SelectContent>
               </Select>
             </div>
-            <div className="space-y-3 rounded-xl border bg-muted/30 p-4">
+            <div
+              className={`space-y-3 rounded-xl border bg-muted/30 p-4 transition-opacity duration-300 ${
+                data.requestorJobFunction ? "opacity-100" : "pointer-events-none hidden opacity-0"
+              }`}
+            >
               <FieldLabel>Please address these possible blockers to your request.</FieldLabel>
               <ul className="space-y-2">
                 <li className="flex items-center gap-3">
