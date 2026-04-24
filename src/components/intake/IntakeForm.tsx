@@ -157,7 +157,9 @@ export function IntakeForm() {
             </div>
             <div
               className={`space-y-3 rounded-xl border bg-muted/30 p-4 transition-opacity duration-300 ${
-                data.requestorJobFunction ? "opacity-100" : "pointer-events-none hidden opacity-0"
+                ["Legal & Compliance", "Human Resources", "Operations"].includes(data.requestorJobFunction)
+                  ? "opacity-100"
+                  : "pointer-events-none hidden opacity-0"
               }`}
             >
               <FieldLabel>Please address these possible blockers to your request.</FieldLabel>
