@@ -79,8 +79,25 @@ export function IntakeForm() {
     8: Boolean(data.desiredCompletionDate),
   } as const;
 
-  const RevealSection = ({ show, children }: { show: boolean; children: React.ReactNode }) =>
-    show ? <div className="animate-fade-in">{children}</div> : null;
+  const RevealSection = ({ show, children }: { show: boolean; children: React.ReactNode }) => {
+    const ref = useRef<HTMLDivElement | null>(null);
+    const prevShow = useRef(show);
+    useEffect(() => {
+      if (show && !prevShow.current && ref.current) {
+        const el = ref.current;
+        window.requestAnimationFrame(() => {
+          el.scrollIntoView({ behavior: "smooth", block: "center" });
+        });
+      }
+      prevShow.current = show;
+    }, [show]);
+    if (!show) return null;
+    return (
+      <div ref={ref} className="animate-section-reveal">
+        {children}
+      </div>
+    );
+  };
 
   const reset = () => {
     setData(initialIntake);
