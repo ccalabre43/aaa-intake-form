@@ -95,7 +95,6 @@ export function IntakeForm() {
     7: sectionComplete[6],
     8: sectionComplete[7],
   } as const;
-  } as const;
 
   const sectionTitles: Record<number, string> = {
     1: "Requester",
