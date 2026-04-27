@@ -69,15 +69,45 @@ export function IntakeForm() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const sectionUnlocked = {
-    2: Boolean(data.requestedBy && data.requestorJobFunction),
-    3: Boolean(data.requestedBy && data.requestorJobFunction && data.communicationType),
-    4: Boolean(data.backgroundPurpose && data.projectSummary),
-    5: Boolean(data.backgroundPurpose && data.projectSummary),
-    6: Boolean(data.deliverables),
-    7: Boolean(data.desiredCompletionDate),
-    8: Boolean(data.desiredCompletionDate),
+  const sectionComplete = {
+    1: Boolean(data.requestedBy && data.requestorJobFunction),
+    2: Boolean(data.communicationType),
+    3: Boolean(data.backgroundPurpose && data.projectSummary),
+    4: data.audienceInternal.length > 0 || data.audienceExternal.length > 0,
+    5: Boolean(data.deliverables),
+    6: Boolean(data.desiredCompletionDate),
+    7: Boolean(data.supplementalDescription),
+    8: files.length > 0,
   } as const;
+
+  const sectionUnlocked = {
+    2: sectionComplete[1],
+    3: sectionComplete[1] && sectionComplete[2],
+    4: sectionComplete[3],
+    5: sectionComplete[3],
+    6: sectionComplete[5],
+    7: sectionComplete[6],
+    8: sectionComplete[6],
+  } as const;
+
+  const sectionTitles: Record<number, string> = {
+    1: "Requester",
+    2: "General info",
+    3: "Background",
+    4: "Audience",
+    5: "Deliverables",
+    6: "Timing",
+    7: "Additional",
+    8: "Attachments",
+  };
+
+  const activeStep = (() => {
+    for (let i = 1; i <= 8; i++) {
+      const unlocked = i === 1 ? true : sectionUnlocked[i as 2 | 3 | 4 | 5 | 6 | 7 | 8];
+      if (unlocked && !sectionComplete[i as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8]) return i;
+    }
+    return 8;
+  })();
 
   const RevealSection = ({ show, children }: { show: boolean; children: React.ReactNode }) => {
     const ref = useRef<HTMLDivElement | null>(null);
