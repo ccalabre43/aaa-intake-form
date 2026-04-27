@@ -150,18 +150,15 @@
 
 @keyframes section-reveal {
   0% {
-    transform: translateY(-12px) scaleY(0.98);
-    max-height: 0;
-    margin-top: 0;
+    transform: translateY(-8px);
   }
   100% {
-    transform: translateY(0) scaleY(1);
-    max-height: 4000px;
+    transform: translateY(0);
   }
 }
 
 .animate-section-reveal {
-  animation: section-reveal 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: section-reveal 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
   transform-origin: top center;
   will-change: transform;
 }
