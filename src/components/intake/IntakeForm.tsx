@@ -116,23 +116,8 @@ export function IntakeForm() {
   })();
 
   const RevealSection = ({ show, children }: { show: boolean; children: React.ReactNode }) => {
-    const ref = useRef<HTMLDivElement | null>(null);
-    const prevShow = useRef(show);
-    useEffect(() => {
-      if (show && !prevShow.current && ref.current) {
-        const el = ref.current;
-        window.requestAnimationFrame(() => {
-          el.scrollIntoView({ behavior: "smooth", block: "center" });
-        });
-      }
-      prevShow.current = show;
-    }, [show]);
     if (!show) return null;
-    return (
-      <div ref={ref} className="animate-section-reveal">
-        {children}
-      </div>
-    );
+    return <div className="animate-section-reveal">{children}</div>;
   };
 
   const reset = () => {
