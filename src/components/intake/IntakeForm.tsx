@@ -69,25 +69,32 @@ export function IntakeForm() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  // A section is "complete" only when ALL of its fields (required + optional) are filled.
   const sectionComplete = {
     1: Boolean(data.requestedBy && data.requestorJobFunction),
-    2: Boolean(data.communicationType),
+    2: Boolean(data.communicationType && data.generalAdditionalInfo),
     3: Boolean(data.backgroundPurpose && data.projectSummary),
-    4: data.audienceInternal.length > 0 || data.audienceExternal.length > 0,
-    5: Boolean(data.deliverables),
-    6: Boolean(data.desiredCompletionDate),
+    4: Boolean(
+      data.audienceInternal.length > 0 &&
+        data.audienceInternalNotes &&
+        data.audienceExternal.length > 0 &&
+        data.audienceExternalNotes
+    ),
+    5: Boolean(data.deliverables && data.goalsExpectations && data.successMeasurement),
+    6: Boolean(data.desiredCompletionDate && data.timingNotes),
     7: Boolean(data.supplementalDescription),
     8: files.length > 0,
   } as const;
 
   const sectionUnlocked = {
     2: sectionComplete[1],
-    3: sectionComplete[1] && sectionComplete[2],
+    3: sectionComplete[2],
     4: sectionComplete[3],
-    5: sectionComplete[3],
+    5: sectionComplete[4],
     6: sectionComplete[5],
     7: sectionComplete[6],
-    8: sectionComplete[6],
+    8: sectionComplete[7],
+  } as const;
   } as const;
 
   const sectionTitles: Record<number, string> = {
