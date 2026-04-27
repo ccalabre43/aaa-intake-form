@@ -9,7 +9,7 @@ interface SectionCardProps {
 
 export function SectionCard({ step, title, description, children }: SectionCardProps) {
   return (
-    <section className="rounded-2xl border bg-card shadow-[var(--shadow-card)] overflow-hidden">
+    <section data-step={step} className="rounded-2xl border bg-card shadow-[var(--shadow-card)] overflow-hidden scroll-mt-4">
       <header className="flex items-start gap-4 px-6 py-5 border-b bg-secondary/40">
         <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-sm font-semibold shadow-[var(--shadow-elegant)]">
           {step}
