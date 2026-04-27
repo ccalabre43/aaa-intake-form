@@ -69,6 +69,19 @@ export function IntakeForm() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  const sectionUnlocked = {
+    2: Boolean(data.requestedBy && data.requestorJobFunction),
+    3: Boolean(data.requestedBy && data.requestorJobFunction && data.communicationType),
+    4: Boolean(data.backgroundPurpose && data.projectSummary),
+    5: Boolean(data.backgroundPurpose && data.projectSummary),
+    6: Boolean(data.deliverables),
+    7: Boolean(data.desiredCompletionDate),
+    8: Boolean(data.desiredCompletionDate),
+  } as const;
+
+  const RevealSection = ({ show, children }: { show: boolean; children: React.ReactNode }) =>
+    show ? <div className="animate-fade-in">{children}</div> : null;
+
   const reset = () => {
     setData(initialIntake);
     setFiles([]);
