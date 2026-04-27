@@ -512,7 +512,7 @@ export function IntakeForm() {
                 title={`Step ${step}: ${sectionTitles[step]}`}
                 className={`group flex shrink-0 items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium transition-all ${
                   isActive
-                    ? "border-primary bg-primary text-primary-foreground shadow-[var(--shadow-elegant)] scale-105"
+                    ? "border-primary bg-primary text-primary-foreground shadow-[var(--shadow-elegant)]"
                     : complete
                     ? "border-primary/30 bg-primary/10 text-primary hover:bg-primary/15"
                     : unlocked
