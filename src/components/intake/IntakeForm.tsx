@@ -231,6 +231,7 @@ export function IntakeForm() {
       </SectionCard>
 
       {/* 2. General information */}
+      <RevealSection show={sectionUnlocked[2]}>
       <SectionCard
         step={2}
         title="General information"
@@ -267,8 +268,10 @@ export function IntakeForm() {
           />
         </div>
       </SectionCard>
+      </RevealSection>
 
       {/* 3. Background & project details */}
+      <RevealSection show={sectionUnlocked[3]}>
       <SectionCard
         step={3}
         title="Background and project details"
@@ -299,8 +302,10 @@ export function IntakeForm() {
           />
         </div>
       </SectionCard>
+      </RevealSection>
 
       {/* 4. Audience */}
+      <RevealSection show={sectionUnlocked[4]}>
       <SectionCard
         step={4}
         title="Audience"
@@ -341,8 +346,10 @@ export function IntakeForm() {
           </div>
         </div>
       </SectionCard>
+      </RevealSection>
 
       {/* 5. Deliverables & outcomes */}
+      <RevealSection show={sectionUnlocked[5]}>
       <SectionCard
         step={5}
         title="Deliverables and outcomes"
@@ -383,8 +390,10 @@ export function IntakeForm() {
           </div>
         </div>
       </SectionCard>
+      </RevealSection>
 
       {/* 6. Project timing */}
+      <RevealSection show={sectionUnlocked[6]}>
       <SectionCard step={6} title="Project timing" description="When do you need this?">
         <div className="grid gap-5 md:grid-cols-[260px_1fr]">
           <div className="space-y-2">
@@ -410,8 +419,10 @@ export function IntakeForm() {
           </div>
         </div>
       </SectionCard>
+      </RevealSection>
 
       {/* 7. Additional information */}
+      <RevealSection show={sectionUnlocked[7]}>
       <SectionCard
         step={7}
         title="Additional information"
@@ -430,8 +441,10 @@ export function IntakeForm() {
           />
         </div>
       </SectionCard>
+      </RevealSection>
 
       {/* 8. Attachments */}
+      <RevealSection show={sectionUnlocked[8]}>
       <SectionCard
         step={8}
         title="Attachments"
@@ -439,6 +452,7 @@ export function IntakeForm() {
       >
         <FileDrop files={files} onChange={setFiles} />
       </SectionCard>
+      </RevealSection>
 
       <div className="sticky bottom-4 z-10 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between rounded-2xl border bg-card/95 backdrop-blur px-5 py-4 shadow-[var(--shadow-card)]">
         <p className="text-xs text-muted-foreground">
