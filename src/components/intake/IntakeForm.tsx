@@ -501,18 +501,70 @@ export function IntakeForm() {
       </SectionCard>
       </RevealSection>
 
-      <div className="sticky bottom-4 z-10 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between rounded-2xl border bg-card/95 backdrop-blur px-5 py-4 shadow-[var(--shadow-card)]">
-        <p className="text-xs text-muted-foreground">
-          <span className="text-accent">*</span> Required fields •{" "}
-          {completion}% complete
-        </p>
-        <div className="flex gap-2 sm:justify-end">
-          <Button type="button" variant="outline" onClick={reset}>
-            Reset
-          </Button>
-          <Button type="submit" className="min-w-[160px]">
-            Submit request
-          </Button>
+      <div className="sticky bottom-4 z-10 rounded-2xl border bg-card/95 backdrop-blur px-5 py-4 shadow-[var(--shadow-card)] space-y-3">
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
+          {[1, 2, 3, 4, 5, 6, 7, 8].map((step) => {
+            const complete = sectionComplete[step as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8];
+            const unlocked = step === 1 ? true : sectionUnlocked[step as 2 | 3 | 4 | 5 | 6 | 7 | 8];
+            const isActive = step === activeStep;
+            const handleJump = () => {
+              if (!unlocked) return;
+              const el = document.querySelector(`[data-step="${step}"]`);
+              el?.scrollIntoView({ behavior: "smooth", block: "start" });
+            };
+            return (
+              <button
+                key={step}
+                type="button"
+                onClick={handleJump}
+                disabled={!unlocked}
+                title={`Step ${step}: ${sectionTitles[step]}`}
+                className={`group flex shrink-0 items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium transition-all ${
+                  isActive
+                    ? "border-primary bg-primary text-primary-foreground shadow-[var(--shadow-elegant)] scale-105"
+                    : complete
+                    ? "border-primary/30 bg-primary/10 text-primary hover:bg-primary/15"
+                    : unlocked
+                    ? "border-border bg-background text-muted-foreground hover:text-foreground"
+                    : "border-dashed border-border bg-muted/40 text-muted-foreground/50 cursor-not-allowed"
+                }`}
+              >
+                <span
+                  className={`flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-bold ${
+                    isActive
+                      ? "bg-primary-foreground text-primary"
+                      : complete
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-muted text-muted-foreground"
+                  }`}
+                >
+                  {complete && !isActive ? "✓" : step}
+                </span>
+                <span className="hidden sm:inline">{sectionTitles[step]}</span>
+              </button>
+            );
+          })}
+        </div>
+        <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between border-t pt-3">
+          <div className="flex items-center gap-3">
+            <div className="h-1.5 w-32 overflow-hidden rounded-full bg-muted">
+              <div
+                className="h-full rounded-full bg-primary transition-all duration-500"
+                style={{ width: `${completion}%` }}
+              />
+            </div>
+            <p className="text-xs text-muted-foreground">
+              <span className="text-accent">*</span> Step {activeStep} of 8 • {completion}% complete
+            </p>
+          </div>
+          <div className="flex gap-2 sm:justify-end">
+            <Button type="button" variant="outline" onClick={reset}>
+              Reset
+            </Button>
+            <Button type="submit" className="min-w-[160px]">
+              Submit request
+            </Button>
+          </div>
         </div>
       </div>
     </form>
