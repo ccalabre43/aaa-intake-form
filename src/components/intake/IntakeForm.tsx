@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -34,6 +34,11 @@ const INTERNAL_OPTS = [
   "None",
 ];
 const EXTERNAL_OPTS = ["Clubs", "Policy Holders", "Members", "None"];
+
+const RevealSection = ({ show, children }: { show: boolean; children: React.ReactNode }) => {
+  if (!show) return null;
+  return <div className="animate-section-reveal">{children}</div>;
+};
 
 export function IntakeForm() {
   const [data, setData] = useState<IntakeData>(initialIntake);
@@ -114,11 +119,6 @@ export function IntakeForm() {
     }
     return 8;
   })();
-
-  const RevealSection = ({ show, children }: { show: boolean; children: React.ReactNode }) => {
-    if (!show) return null;
-    return <div className="animate-section-reveal">{children}</div>;
-  };
 
   const reset = () => {
     setData(initialIntake);
