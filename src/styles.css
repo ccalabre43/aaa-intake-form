@@ -148,18 +148,7 @@
   }
 }
 
-@keyframes section-reveal {
-  0% {
-    transform: translateY(-8px);
-  }
-  100% {
-    transform: translateY(0);
-  }
-}
-
 .animate-section-reveal {
-  animation: section-reveal 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
-  transform-origin: top center;
-  will-change: transform;
+  /* No transform/animation — avoid layout shifts and focus jumps while typing */
 }
 
