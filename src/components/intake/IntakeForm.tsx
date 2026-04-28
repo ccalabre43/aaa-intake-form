@@ -248,7 +248,7 @@ export function IntakeForm() {
                 Reset
               </Button>
               <Button type="button" className="min-w-[160px]">
-                Submit to Workfront
+                Submit Request
               </Button>
             </div>
           </div>
