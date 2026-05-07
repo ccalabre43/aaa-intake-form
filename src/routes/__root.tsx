@@ -29,14 +29,18 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
+      { title: "AAA Marketing Intake Request" },
+      { name: "description", content: "AAA Marketing Intake Request: fill out and get your work entered into the marketing teams schedule." },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { property: "og:title", content: "AAA Marketing Intake Request" },
+      { property: "og:description", content: "AAA Marketing Intake Request: fill out and get your work entered into the marketing teams schedule." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "AAA Marketing Intake Request" },
+      { name: "twitter:description", content: "AAA Marketing Intake Request: fill out and get your work entered into the marketing teams schedule." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/xF8Uo7w16QWaa34ABAuLbM2ITBc2/social-images/social-1778182093156-ae-logo-alone.webp" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/xF8Uo7w16QWaa34ABAuLbM2ITBc2/social-images/social-1778182093156-ae-logo-alone.webp" },
     ],
     links: [
       {
