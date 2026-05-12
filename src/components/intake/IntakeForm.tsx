@@ -25,6 +25,7 @@ import { CheckboxChips } from "./CheckboxChips";
 import { FileDrop } from "./FileDrop";
 import { SubmissionSummary } from "./SubmissionSummary";
 import { initialIntake, REQUIRED_FIELDS, type IntakeData } from "./types";
+import { DarkModeToggle } from "@/components/DarkModeToggle";
 
 const INTERNAL_OPTS = [
   "All Associates",
