@@ -25,6 +25,7 @@ import { CheckboxChips } from "./CheckboxChips";
 import { FileDrop } from "./FileDrop";
 import { SubmissionSummary } from "./SubmissionSummary";
 import { initialIntake, REQUIRED_FIELDS, type IntakeData } from "./types";
+import { DarkModeToggle } from "@/components/DarkModeToggle";
 
 const INTERNAL_OPTS = [
   "All Associates",
@@ -136,9 +137,10 @@ export function IntakeForm() {
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Hero / intro */}
       <div
-        className="rounded-2xl p-8 text-primary-foreground shadow-[var(--shadow-elegant)]"
+        className="relative rounded-2xl p-8 text-primary-foreground shadow-[var(--shadow-elegant)]"
         style={{ background: "var(--gradient-hero)" }}
       >
+        <DarkModeToggle className="absolute right-4 top-4 bg-transparent border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground" />
         <p className="text-xs font-semibold uppercase tracking-widest text-primary-foreground/80">
           A3 MARKETING TEAM SERVICE REQUEST
         </p>
