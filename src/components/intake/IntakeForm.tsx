@@ -49,6 +49,7 @@ export function IntakeForm() {
     null
   );
   const [attentionModalOpen, setAttentionModalOpen] = useState(false);
+  const [attentionExplanation, setAttentionExplanation] = useState("");
 
   const set = <K extends keyof IntakeData>(key: K, value: IntakeData[K]) =>
     setData((prev) => ({ ...prev, [key]: value }));
