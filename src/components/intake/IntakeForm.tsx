@@ -49,6 +49,7 @@ export function IntakeForm() {
     null
   );
   const [attentionModalOpen, setAttentionModalOpen] = useState(false);
+  const [attentionExplanation, setAttentionExplanation] = useState("");
 
   const set = <K extends keyof IntakeData>(key: K, value: IntakeData[K]) =>
     setData((prev) => ({ ...prev, [key]: value }));
@@ -265,9 +266,14 @@ export function IntakeForm() {
                 task. You should also fill out an additional explanation if needed.
               </DialogDescription>
             </DialogHeader>
-            <Textarea rows={4} placeholder="Additional explanation (optional)" />
+            <Textarea
+              rows={4}
+              placeholder="Additional explanation (optional)"
+              value={attentionExplanation}
+              onChange={(e) => setAttentionExplanation(e.target.value)}
+            />
             <div className="flex justify-end gap-2 pt-2">
-              <Button type="button" variant="outline" onClick={() => setAttentionModalOpen(false)}>
+              <Button type="button" variant="outline" onClick={() => setAttentionExplanation("")}>
                 Reset
               </Button>
               <Button type="button" onClick={() => setAttentionModalOpen(false)}>
