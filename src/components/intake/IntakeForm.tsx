@@ -266,6 +266,14 @@ export function IntakeForm() {
               </DialogDescription>
             </DialogHeader>
             <Textarea rows={4} placeholder="Additional explanation (optional)" />
+            <div className="flex justify-end gap-2 pt-2">
+              <Button type="button" variant="outline" onClick={() => setAttentionModalOpen(false)}>
+                Reset
+              </Button>
+              <Button type="button" onClick={() => setAttentionModalOpen(false)}>
+                Submit
+              </Button>
+            </div>
           </DialogContent>
         </Dialog>
       </SectionCard>
