@@ -138,8 +138,7 @@ export function IntakeForm() {
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Hero / intro */}
       <div
-        className="relative rounded-2xl p-8 text-white shadow-[var(--shadow-elegant)] [--primary-foreground:theme(colors.white)]"
-        style={{ background: "var(--gradient-hero)" }}
+        className="relative rounded-2xl p-8 text-white shadow-[var(--shadow-elegant)] [--primary-foreground:theme(colors.white)] bg-primary"
       >
         <DarkModeToggle className="absolute right-4 top-4 bg-transparent border-white/30 text-white hover:bg-white/10 hover:text-white" />
         <p className="text-xs font-semibold uppercase tracking-widest text-primary-foreground/80">
