@@ -24,7 +24,7 @@ export const Route = createFileRoute("/")({
 function Index() {
   return (
     <main className="min-h-screen bg-background">
-      <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 sm:py-14 pt-[20px] pb-[30px] pr-[20px] pl-[20px]">
+      <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 sm:py-14 pr-[20px] pl-[20px] pt-[10px] pb-[10px]">
         <IntakeForm />
       </div>
       <Toaster richColors position="top-center" />
