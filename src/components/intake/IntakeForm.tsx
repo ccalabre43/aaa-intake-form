@@ -24,8 +24,16 @@ import { ChoiceCards } from "./ChoiceCards";
 import { CheckboxChips } from "./CheckboxChips";
 import { FileDrop } from "./FileDrop";
 import { SubmissionSummary } from "./SubmissionSummary";
-import { initialIntake, REQUIRED_FIELDS, type IntakeData } from "./types";
+import {
+  initialIntake,
+  REQUIRED_FIELDS,
+  validateIntake,
+  type IntakeData,
+  type IntakeErrors,
+} from "./types";
+import { FieldError } from "./FieldError";
 import { DarkModeToggle } from "@/components/DarkModeToggle";
+import { cn } from "@/lib/utils";
 
 const INTERNAL_OPTS = [
   "All Associates",
@@ -50,9 +58,26 @@ export function IntakeForm() {
   );
   const [attentionModalOpen, setAttentionModalOpen] = useState(false);
   const [attentionExplanation, setAttentionExplanation] = useState("");
+  const [errors, setErrors] = useState<IntakeErrors>({});
+  const [touched, setTouched] = useState<Partial<Record<keyof IntakeData, boolean>>>({});
 
-  const set = <K extends keyof IntakeData>(key: K, value: IntakeData[K]) =>
-    setData((prev) => ({ ...prev, [key]: value }));
+  const set = <K extends keyof IntakeData>(key: K, value: IntakeData[K]) => {
+    setData((prev) => {
+      const next = { ...prev, [key]: value };
+      // Re-validate this field if it has already been touched or has an error.
+      if (touched[key] || errors[key]) {
+        const fresh = validateIntake(next);
+        setErrors((prevErr) => ({ ...prevErr, [key]: fresh[key] }));
+      }
+      return next;
+    });
+  };
+
+  const markTouched = (key: keyof IntakeData) => {
+    setTouched((prev) => ({ ...prev, [key]: true }));
+    const fresh = validateIntake(data);
+    setErrors((prev) => ({ ...prev, [key]: fresh[key] }));
+  };
 
   const completion = useMemo(() => {
     const done = REQUIRED_FIELDS.filter((k) => {
@@ -64,14 +89,24 @@ export function IntakeForm() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const missing = REQUIRED_FIELDS.filter((k) => {
-      const v = data[k];
-      return Array.isArray(v) ? v.length === 0 : !v;
-    });
-    if (missing.length) {
-      toast.error("Please complete all required fields.");
+    const validationErrors = validateIntake(data);
+    if (Object.keys(validationErrors).length) {
+      setErrors(validationErrors);
+      // Mark all validated fields as touched so errors stay visible.
+      const allTouched: Partial<Record<keyof IntakeData, boolean>> = {};
+      for (const k of Object.keys(validationErrors)) {
+        allTouched[k as keyof IntakeData] = true;
+      }
+      setTouched((prev) => ({ ...prev, ...allTouched }));
+      toast.error("Please fix the highlighted fields.");
+      // Focus the first invalid field if it has a matching id.
+      const firstKey = Object.keys(validationErrors)[0];
+      const el = document.getElementById(firstKey);
+      el?.focus();
+      el?.scrollIntoView({ behavior: "smooth", block: "center" });
       return;
     }
+    setErrors({});
     setSubmitted({ data, files });
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -126,7 +161,16 @@ export function IntakeForm() {
     setData(initialIntake);
     setFiles([]);
     setSubmitted(null);
+    setErrors({});
+    setTouched({});
   };
+
+  const errorClass = (key: keyof IntakeData) =>
+    errors[key]
+      ? "border-destructive focus-visible:ring-destructive ring-1 ring-destructive/40"
+      : "";
+  const describedBy = (key: keyof IntakeData) =>
+    errors[key] ? `${String(key)}-error` : undefined;
 
   if (submitted) {
     return (
@@ -177,8 +221,35 @@ export function IntakeForm() {
                 id="requestedBy"
                 value={data.requestedBy}
                 onChange={(e) => set("requestedBy", e.target.value)}
+                onBlur={() => markTouched("requestedBy")}
                 placeholder="Your full name"
+                maxLength={100}
+                autoComplete="name"
+                aria-invalid={!!errors.requestedBy}
+                aria-describedby={describedBy("requestedBy")}
+                className={cn(errorClass("requestedBy"))}
               />
+              <FieldError id="requestedBy-error" message={errors.requestedBy} />
+            </div>
+            <div className="space-y-2">
+              <FieldLabel htmlFor="requestorEmail" required>
+                Email
+              </FieldLabel>
+              <Input
+                id="requestorEmail"
+                type="email"
+                inputMode="email"
+                value={data.requestorEmail}
+                onChange={(e) => set("requestorEmail", e.target.value)}
+                onBlur={() => markTouched("requestorEmail")}
+                placeholder="you@company.com"
+                maxLength={255}
+                autoComplete="email"
+                aria-invalid={!!errors.requestorEmail}
+                aria-describedby={describedBy("requestorEmail")}
+                className={cn(errorClass("requestorEmail"))}
+              />
+              <FieldError id="requestorEmail-error" message={errors.requestorEmail} />
             </div>
             <div className="space-y-2">
               <FieldLabel htmlFor="requestorJobFunction" required>
@@ -186,9 +257,17 @@ export function IntakeForm() {
               </FieldLabel>
               <Select
                 value={data.requestorJobFunction}
-                onValueChange={(v) => set("requestorJobFunction", v)}
+                onValueChange={(v) => {
+                  set("requestorJobFunction", v);
+                  markTouched("requestorJobFunction");
+                }}
               >
-                <SelectTrigger id="requestorJobFunction">
+                <SelectTrigger
+                  id="requestorJobFunction"
+                  aria-invalid={!!errors.requestorJobFunction}
+                  aria-describedby={describedBy("requestorJobFunction")}
+                  className={cn(errorClass("requestorJobFunction"))}
+                >
                   <SelectValue placeholder="Select your job function" />
                 </SelectTrigger>
                 <SelectContent className="[&_[role=option]]:focus:bg-sky-400/20 [&_[role=option]]:focus:text-foreground [&_[role=option][data-highlighted]]:bg-sky-400/20 [&_[role=option][data-highlighted]]:text-foreground">
@@ -207,6 +286,7 @@ export function IntakeForm() {
                   <SelectItem value="Other">Other</SelectItem>
                 </SelectContent>
               </Select>
+              <FieldError id="requestorJobFunction-error" message={errors.requestorJobFunction} />
             </div>
             <div
               className={`space-y-3 rounded-xl border bg-muted/30 p-4 transition-opacity duration-300 ${
@@ -295,7 +375,10 @@ export function IntakeForm() {
           <ChoiceCards
             name="communicationType"
             value={data.communicationType}
-            onChange={(v) => set("communicationType", v)}
+            onChange={(v) => {
+              set("communicationType", v);
+              markTouched("communicationType");
+            }}
             options={[
               {
                 value: "Corporate Communications",
@@ -309,6 +392,7 @@ export function IntakeForm() {
               },
             ]}
           />
+          <FieldError id="communicationType-error" message={errors.communicationType} />
         </div>
         <div className="space-y-2">
           <FieldLabel htmlFor="generalAdditionalInfo">Additional Information</FieldLabel>
@@ -339,8 +423,14 @@ export function IntakeForm() {
             rows={5}
             value={data.backgroundPurpose}
             onChange={(e) => set("backgroundPurpose", e.target.value)}
+            onBlur={() => markTouched("backgroundPurpose")}
             placeholder="What's driving this request? What's the business need?"
+            maxLength={2000}
+            aria-invalid={!!errors.backgroundPurpose}
+            aria-describedby={describedBy("backgroundPurpose")}
+            className={cn(errorClass("backgroundPurpose"))}
           />
+          <FieldError id="backgroundPurpose-error" message={errors.backgroundPurpose} />
         </div>
         <div className="space-y-2">
           <FieldLabel htmlFor="projectSummary" required>
@@ -351,8 +441,14 @@ export function IntakeForm() {
             rows={5}
             value={data.projectSummary}
             onChange={(e) => set("projectSummary", e.target.value)}
+            onBlur={() => markTouched("projectSummary")}
             placeholder="Briefly describe what you'd like us to create."
+            maxLength={2000}
+            aria-invalid={!!errors.projectSummary}
+            aria-describedby={describedBy("projectSummary")}
+            className={cn(errorClass("projectSummary"))}
           />
+          <FieldError id="projectSummary-error" message={errors.projectSummary} />
         </div>
       </SectionCard>
       </RevealSection>
@@ -417,8 +513,14 @@ export function IntakeForm() {
             rows={4}
             value={data.deliverables}
             onChange={(e) => set("deliverables", e.target.value)}
+            onBlur={() => markTouched("deliverables")}
             placeholder="List the specific assets you need (e.g., 1 hero banner, 3 social posts, landing page)."
+            maxLength={2000}
+            aria-invalid={!!errors.deliverables}
+            aria-describedby={describedBy("deliverables")}
+            className={cn(errorClass("deliverables"))}
           />
+          <FieldError id="deliverables-error" message={errors.deliverables} />
         </div>
         <div className="grid gap-5 md:grid-cols-2">
           <div className="space-y-2">
@@ -458,6 +560,14 @@ export function IntakeForm() {
               type="date"
               value={data.desiredCompletionDate}
               onChange={(e) => set("desiredCompletionDate", e.target.value)}
+              onBlur={() => markTouched("desiredCompletionDate")}
+              aria-invalid={!!errors.desiredCompletionDate}
+              aria-describedby={describedBy("desiredCompletionDate")}
+              className={cn(errorClass("desiredCompletionDate"))}
+            />
+            <FieldError
+              id="desiredCompletionDate-error"
+              message={errors.desiredCompletionDate}
             />
           </div>
           <div className="space-y-2">

@@ -45,6 +45,7 @@ export function SubmissionSummary({ data, files, onReset }: SubmissionSummaryPro
         </div>
         <dl className="px-6 divide-border">
           <Row label="Requested By" value={data.requestedBy} />
+          <Row label="Email" value={data.requestorEmail} />
           <Row label="Requestor Job Function" value={data.requestorJobFunction} />
           <Row label="Communication Type" value={data.communicationType} />
           <Row label="General Additional Info" value={data.generalAdditionalInfo} />
