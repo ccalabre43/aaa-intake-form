@@ -221,8 +221,35 @@ export function IntakeForm() {
                 id="requestedBy"
                 value={data.requestedBy}
                 onChange={(e) => set("requestedBy", e.target.value)}
+                onBlur={() => markTouched("requestedBy")}
                 placeholder="Your full name"
+                maxLength={100}
+                autoComplete="name"
+                aria-invalid={!!errors.requestedBy}
+                aria-describedby={describedBy("requestedBy")}
+                className={cn(errorClass("requestedBy"))}
               />
+              <FieldError id="requestedBy-error" message={errors.requestedBy} />
+            </div>
+            <div className="space-y-2">
+              <FieldLabel htmlFor="requestorEmail" required>
+                Email
+              </FieldLabel>
+              <Input
+                id="requestorEmail"
+                type="email"
+                inputMode="email"
+                value={data.requestorEmail}
+                onChange={(e) => set("requestorEmail", e.target.value)}
+                onBlur={() => markTouched("requestorEmail")}
+                placeholder="you@company.com"
+                maxLength={255}
+                autoComplete="email"
+                aria-invalid={!!errors.requestorEmail}
+                aria-describedby={describedBy("requestorEmail")}
+                className={cn(errorClass("requestorEmail"))}
+              />
+              <FieldError id="requestorEmail-error" message={errors.requestorEmail} />
             </div>
             <div className="space-y-2">
               <FieldLabel htmlFor="requestorJobFunction" required>
@@ -230,9 +257,17 @@ export function IntakeForm() {
               </FieldLabel>
               <Select
                 value={data.requestorJobFunction}
-                onValueChange={(v) => set("requestorJobFunction", v)}
+                onValueChange={(v) => {
+                  set("requestorJobFunction", v);
+                  markTouched("requestorJobFunction");
+                }}
               >
-                <SelectTrigger id="requestorJobFunction">
+                <SelectTrigger
+                  id="requestorJobFunction"
+                  aria-invalid={!!errors.requestorJobFunction}
+                  aria-describedby={describedBy("requestorJobFunction")}
+                  className={cn(errorClass("requestorJobFunction"))}
+                >
                   <SelectValue placeholder="Select your job function" />
                 </SelectTrigger>
                 <SelectContent className="[&_[role=option]]:focus:bg-sky-400/20 [&_[role=option]]:focus:text-foreground [&_[role=option][data-highlighted]]:bg-sky-400/20 [&_[role=option][data-highlighted]]:text-foreground">
