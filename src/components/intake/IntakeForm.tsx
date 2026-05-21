@@ -375,7 +375,10 @@ export function IntakeForm() {
           <ChoiceCards
             name="communicationType"
             value={data.communicationType}
-            onChange={(v) => set("communicationType", v)}
+            onChange={(v) => {
+              set("communicationType", v);
+              markTouched("communicationType");
+            }}
             options={[
               {
                 value: "Corporate Communications",
@@ -389,6 +392,7 @@ export function IntakeForm() {
               },
             ]}
           />
+          <FieldError id="communicationType-error" message={errors.communicationType} />
         </div>
         <div className="space-y-2">
           <FieldLabel htmlFor="generalAdditionalInfo">Additional Information</FieldLabel>
