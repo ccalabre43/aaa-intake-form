@@ -58,9 +58,26 @@ export function IntakeForm() {
   );
   const [attentionModalOpen, setAttentionModalOpen] = useState(false);
   const [attentionExplanation, setAttentionExplanation] = useState("");
+  const [errors, setErrors] = useState<IntakeErrors>({});
+  const [touched, setTouched] = useState<Partial<Record<keyof IntakeData, boolean>>>({});
 
-  const set = <K extends keyof IntakeData>(key: K, value: IntakeData[K]) =>
-    setData((prev) => ({ ...prev, [key]: value }));
+  const set = <K extends keyof IntakeData>(key: K, value: IntakeData[K]) => {
+    setData((prev) => {
+      const next = { ...prev, [key]: value };
+      // Re-validate this field if it has already been touched or has an error.
+      if (touched[key] || errors[key]) {
+        const fresh = validateIntake(next);
+        setErrors((prevErr) => ({ ...prevErr, [key]: fresh[key] }));
+      }
+      return next;
+    });
+  };
+
+  const markTouched = (key: keyof IntakeData) => {
+    setTouched((prev) => ({ ...prev, [key]: true }));
+    const fresh = validateIntake(data);
+    setErrors((prev) => ({ ...prev, [key]: fresh[key] }));
+  };
 
   const completion = useMemo(() => {
     const done = REQUIRED_FIELDS.filter((k) => {
@@ -72,14 +89,24 @@ export function IntakeForm() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const missing = REQUIRED_FIELDS.filter((k) => {
-      const v = data[k];
-      return Array.isArray(v) ? v.length === 0 : !v;
-    });
-    if (missing.length) {
-      toast.error("Please complete all required fields.");
+    const validationErrors = validateIntake(data);
+    if (Object.keys(validationErrors).length) {
+      setErrors(validationErrors);
+      // Mark all validated fields as touched so errors stay visible.
+      const allTouched: Partial<Record<keyof IntakeData, boolean>> = {};
+      for (const k of Object.keys(validationErrors)) {
+        allTouched[k as keyof IntakeData] = true;
+      }
+      setTouched((prev) => ({ ...prev, ...allTouched }));
+      toast.error("Please fix the highlighted fields.");
+      // Focus the first invalid field if it has a matching id.
+      const firstKey = Object.keys(validationErrors)[0];
+      const el = document.getElementById(firstKey);
+      el?.focus();
+      el?.scrollIntoView({ behavior: "smooth", block: "center" });
       return;
     }
+    setErrors({});
     setSubmitted({ data, files });
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
