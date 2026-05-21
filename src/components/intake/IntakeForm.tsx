@@ -560,6 +560,14 @@ export function IntakeForm() {
               type="date"
               value={data.desiredCompletionDate}
               onChange={(e) => set("desiredCompletionDate", e.target.value)}
+              onBlur={() => markTouched("desiredCompletionDate")}
+              aria-invalid={!!errors.desiredCompletionDate}
+              aria-describedby={describedBy("desiredCompletionDate")}
+              className={cn(errorClass("desiredCompletionDate"))}
+            />
+            <FieldError
+              id="desiredCompletionDate-error"
+              message={errors.desiredCompletionDate}
             />
           </div>
           <div className="space-y-2">
