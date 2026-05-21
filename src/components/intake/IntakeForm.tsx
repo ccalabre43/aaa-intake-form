@@ -24,8 +24,16 @@ import { ChoiceCards } from "./ChoiceCards";
 import { CheckboxChips } from "./CheckboxChips";
 import { FileDrop } from "./FileDrop";
 import { SubmissionSummary } from "./SubmissionSummary";
-import { initialIntake, REQUIRED_FIELDS, type IntakeData } from "./types";
+import {
+  initialIntake,
+  REQUIRED_FIELDS,
+  validateIntake,
+  type IntakeData,
+  type IntakeErrors,
+} from "./types";
+import { FieldError } from "./FieldError";
 import { DarkModeToggle } from "@/components/DarkModeToggle";
+import { cn } from "@/lib/utils";
 
 const INTERNAL_OPTS = [
   "All Associates",
