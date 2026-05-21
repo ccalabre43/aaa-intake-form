@@ -423,8 +423,14 @@ export function IntakeForm() {
             rows={5}
             value={data.backgroundPurpose}
             onChange={(e) => set("backgroundPurpose", e.target.value)}
+            onBlur={() => markTouched("backgroundPurpose")}
             placeholder="What's driving this request? What's the business need?"
+            maxLength={2000}
+            aria-invalid={!!errors.backgroundPurpose}
+            aria-describedby={describedBy("backgroundPurpose")}
+            className={cn(errorClass("backgroundPurpose"))}
           />
+          <FieldError id="backgroundPurpose-error" message={errors.backgroundPurpose} />
         </div>
         <div className="space-y-2">
           <FieldLabel htmlFor="projectSummary" required>
@@ -435,8 +441,14 @@ export function IntakeForm() {
             rows={5}
             value={data.projectSummary}
             onChange={(e) => set("projectSummary", e.target.value)}
+            onBlur={() => markTouched("projectSummary")}
             placeholder="Briefly describe what you'd like us to create."
+            maxLength={2000}
+            aria-invalid={!!errors.projectSummary}
+            aria-describedby={describedBy("projectSummary")}
+            className={cn(errorClass("projectSummary"))}
           />
+          <FieldError id="projectSummary-error" message={errors.projectSummary} />
         </div>
       </SectionCard>
       </RevealSection>
