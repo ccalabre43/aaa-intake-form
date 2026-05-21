@@ -286,6 +286,7 @@ export function IntakeForm() {
                   <SelectItem value="Other">Other</SelectItem>
                 </SelectContent>
               </Select>
+              <FieldError id="requestorJobFunction-error" message={errors.requestorJobFunction} />
             </div>
             <div
               className={`space-y-3 rounded-xl border bg-muted/30 p-4 transition-opacity duration-300 ${
