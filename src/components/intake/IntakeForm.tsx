@@ -161,7 +161,16 @@ export function IntakeForm() {
     setData(initialIntake);
     setFiles([]);
     setSubmitted(null);
+    setErrors({});
+    setTouched({});
   };
+
+  const errorClass = (key: keyof IntakeData) =>
+    errors[key]
+      ? "border-destructive focus-visible:ring-destructive ring-1 ring-destructive/40"
+      : "";
+  const describedBy = (key: keyof IntakeData) =>
+    errors[key] ? `${String(key)}-error` : undefined;
 
   if (submitted) {
     return (
