@@ -513,8 +513,14 @@ export function IntakeForm() {
             rows={4}
             value={data.deliverables}
             onChange={(e) => set("deliverables", e.target.value)}
+            onBlur={() => markTouched("deliverables")}
             placeholder="List the specific assets you need (e.g., 1 hero banner, 3 social posts, landing page)."
+            maxLength={2000}
+            aria-invalid={!!errors.deliverables}
+            aria-describedby={describedBy("deliverables")}
+            className={cn(errorClass("deliverables"))}
           />
+          <FieldError id="deliverables-error" message={errors.deliverables} />
         </div>
         <div className="grid gap-5 md:grid-cols-2">
           <div className="space-y-2">
