@@ -14,7 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      intake_submissions: {
+        Row: {
+          attachments: Json
+          created_at: string
+          data: Json
+          id: string
+          reference: string
+          status: string
+          workfront_id: string | null
+        }
+        Insert: {
+          attachments?: Json
+          created_at?: string
+          data: Json
+          id?: string
+          reference: string
+          status?: string
+          workfront_id?: string | null
+        }
+        Update: {
+          attachments?: Json
+          created_at?: string
+          data?: Json
+          id?: string
+          reference?: string
+          status?: string
+          workfront_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
