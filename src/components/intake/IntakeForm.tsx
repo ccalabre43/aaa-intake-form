@@ -34,6 +34,19 @@ import {
 import { FieldError } from "./FieldError";
 import { DarkModeToggle } from "@/components/DarkModeToggle";
 import { cn } from "@/lib/utils";
+import { useServerFn } from "@tanstack/react-start";
+import { Loader2, AlertCircle } from "lucide-react";
+import { submitIntake as submitIntakeFn } from "@/lib/intake.functions";
+import { extractBrief as extractBriefFn } from "@/lib/brief.functions";
+
+function toBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = () => resolve(String(r.result).split(",")[1] ?? "");
+    r.onerror = () => reject(r.error);
+    r.readAsDataURL(file);
+  });
+}
 
 const INTERNAL_OPTS = [
   "All Associates",
@@ -53,9 +66,17 @@ export function IntakeForm() {
   const [data, setData] = useState<IntakeData>(initialIntake);
   const [files, setFiles] = useState<File[]>([]);
   const [briefFiles, setBriefFiles] = useState<File[]>([]);
-  const [submitted, setSubmitted] = useState<{ data: IntakeData; files: File[] } | null>(
-    null
-  );
+  const [submitted, setSubmitted] = useState<{
+    data: IntakeData;
+    files: File[];
+    reference: string;
+    workfrontUrl: string | null;
+  } | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [autoFilling, setAutoFilling] = useState(false);
+  const submitIntake = useServerFn(submitIntakeFn);
+  const extractBrief = useServerFn(extractBriefFn);
   const [attentionModalOpen, setAttentionModalOpen] = useState(false);
   const [attentionExplanation, setAttentionExplanation] = useState("");
   const [errors, setErrors] = useState<IntakeErrors>({});
@@ -87,19 +108,72 @@ export function IntakeForm() {
     return Math.round((done / REQUIRED_FIELDS.length) * 100);
   }, [data]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleBriefChange = async (next: File[]) => {
+    const added = next.filter((f) => !briefFiles.includes(f));
+    setBriefFiles(next);
+    const file = added[0];
+    if (!file) return;
+    setAutoFilling(true);
+    try {
+      const name = file.name.toLowerCase();
+      let payload: { text?: string; pdfBase64?: string } = {};
+      if (name.endsWith(".pdf") || file.type === "application/pdf") {
+        payload.pdfBase64 = await toBase64(file);
+      } else if (name.endsWith(".docx")) {
+        const mammoth = await import("mammoth");
+        const r = await mammoth.extractRawText({ arrayBuffer: await file.arrayBuffer() });
+        payload.text = r.value.slice(0, 60000);
+      } else if (file.type.startsWith("text/") || /\.(txt|md|csv|rtf)$/.test(name)) {
+        payload.text = (await file.text()).slice(0, 60000);
+      } else {
+        toast.error("We can read PDF, Word (.docx), or text briefs.");
+        return;
+      }
+      const res = await extractBrief({
+        data: { filename: file.name, today: new Date().toISOString().slice(0, 10), ...payload },
+      });
+      if (!res.ok) {
+        toast.error(res.error);
+        return;
+      }
+      let count = 0;
+      setData((prev) => {
+        const merged = { ...prev } as Record<string, unknown>;
+        for (const [k, v] of Object.entries(res.fields)) {
+          const cur = merged[k];
+          const empty = Array.isArray(cur) ? cur.length === 0 : !cur;
+          const has = Array.isArray(v) ? v.length > 0 : Boolean(v);
+          if (k in prev && empty && has) {
+            merged[k] = v;
+            count++;
+          }
+        }
+        return merged as unknown as IntakeData;
+      });
+      setTimeout(() => {
+        if (count) toast.success(`Filled ${count} field${count === 1 ? "" : "s"} from your brief. Please review them.`);
+        else toast.info("No new details found in the brief to fill in.");
+      }, 0);
+    } catch (err) {
+      console.error(err);
+      toast.error("We couldn't read that brief. You can still fill in the form by hand.");
+    } finally {
+      setAutoFilling(false);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (submitting) return;
     const validationErrors = validateIntake(data);
     if (Object.keys(validationErrors).length) {
       setErrors(validationErrors);
-      // Mark all validated fields as touched so errors stay visible.
       const allTouched: Partial<Record<keyof IntakeData, boolean>> = {};
       for (const k of Object.keys(validationErrors)) {
         allTouched[k as keyof IntakeData] = true;
       }
       setTouched((prev) => ({ ...prev, ...allTouched }));
       toast.error("Please fix the highlighted fields.");
-      // Focus the first invalid field if it has a matching id.
       const firstKey = Object.keys(validationErrors)[0];
       const el = document.getElementById(firstKey);
       el?.focus();
@@ -107,8 +181,32 @@ export function IntakeForm() {
       return;
     }
     setErrors({});
-    setSubmitted({ data, files });
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    setSubmitError(null);
+    setSubmitting(true);
+    try {
+      const all = [...briefFiles, ...files];
+      const encoded = await Promise.all(
+        all.map(async (f) => ({ name: f.name, type: f.type, base64: await toBase64(f) }))
+      );
+      const res = await submitIntake({ data: { data, files: encoded } });
+      if (!res.ok) {
+        setSubmitError(res.error);
+        return;
+      }
+      setSubmitted({ data, files: all, reference: res.reference, workfrontUrl: res.workfrontUrl });
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } catch (err) {
+      console.error(err);
+      const offline = typeof navigator !== "undefined" && !navigator.onLine;
+      setSubmitError(
+        offline
+          ? "You appear to be offline. Check your connection and try again."
+          : "Something went wrong sending your request."
+      );
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   // A section is "complete" only when ALL of its fields (required + optional) are filled.
@@ -174,12 +272,29 @@ export function IntakeForm() {
 
   if (submitted) {
     return (
-      <SubmissionSummary data={submitted.data} files={submitted.files} onReset={reset} />
+      <SubmissionSummary
+        data={submitted.data}
+        files={submitted.files}
+        reference={submitted.reference}
+        workfrontUrl={submitted.workfrontUrl}
+        onReset={reset}
+      />
     );
   }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      {submitError && (
+        <div role="alert" className="flex flex-col gap-3 rounded-xl border border-destructive/50 bg-destructive/10 p-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-start gap-2 text-sm text-destructive">
+            <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+            <span>{submitError} Everything you entered is still here.</span>
+          </div>
+          <Button type="submit" variant="outline" size="sm" disabled={submitting}>
+            Try again
+          </Button>
+        </div>
+      )}
       {/* Hero / intro */}
       <div
         className="relative rounded-2xl px-8 pb-8 pt-3 text-white shadow-[var(--shadow-elegant)] [--primary-foreground:theme(colors.white)] bg-[oklch(0.36_0.16_258)]"
@@ -324,13 +439,18 @@ export function IntakeForm() {
           </div>
           <div className="space-y-3">
             <FieldLabel>Upload your creative brief here</FieldLabel>
-            <FileDrop files={briefFiles} onChange={setBriefFiles} extraHeight={20} />
+            <FileDrop files={briefFiles} onChange={handleBriefChange} extraHeight={20} />
+            {autoFilling && (
+              <p className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Loader2 className="h-4 w-4 animate-spin" /> Reading your brief and filling in the form…
+              </p>
+            )}
             <div className="flex gap-2 sm:justify-end pt-1">
-              <Button type="button" variant="outline" onClick={() => setBriefFiles([])}>
+              <Button type="button" variant="outline" onClick={() => setBriefFiles([])} disabled={submitting}>
                 Reset
               </Button>
-              <Button type="button" className="min-w-[160px]">
-                Submit Request
+              <Button type="submit" className="min-w-[160px]" disabled={submitting}>
+                {submitting ? <><Loader2 className="h-4 w-4 animate-spin" /> Submitting…</> : "Submit Request"}
               </Button>
             </div>
           </div>
@@ -674,11 +794,11 @@ export function IntakeForm() {
             </p>
           </div>
           <div className="flex gap-2 sm:justify-end">
-            <Button type="button" variant="outline" onClick={reset}>
+            <Button type="button" variant="outline" onClick={reset} disabled={submitting}>
               Reset
             </Button>
-            <Button type="submit" className="min-w-[160px]">
-              Submit request
+            <Button type="submit" className="min-w-[160px]" disabled={submitting}>
+              {submitting ? <><Loader2 className="h-4 w-4 animate-spin" /> Submitting…</> : "Submit request"}
             </Button>
           </div>
         </div>

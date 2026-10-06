@@ -5,6 +5,8 @@ import type { IntakeData } from "./types";
 interface SubmissionSummaryProps {
   data: IntakeData;
   files: File[];
+  reference?: string;
+  workfrontUrl?: string | null;
   onReset: () => void;
 }
 
@@ -20,7 +22,7 @@ function Row({ label, value }: { label: string; value: React.ReactNode }) {
   );
 }
 
-export function SubmissionSummary({ data, files, onReset }: SubmissionSummaryProps) {
+export function SubmissionSummary({ data, files, reference, workfrontUrl, onReset }: SubmissionSummaryProps) {
   return (
     <div className="space-y-6">
       <div
@@ -35,6 +37,16 @@ export function SubmissionSummary({ data, files, onReset }: SubmissionSummaryPro
               Thanks, {data.requestedBy || "team"} — your creative request has been
               captured. Below is a summary of what you sent.
             </p>
+            {reference && (
+              <p className="mt-3 text-sm font-medium">
+                Reference number: <span className="font-mono">{reference}</span>
+              </p>
+            )}
+            {workfrontUrl && (
+              <a href={workfrontUrl} target="_blank" rel="noreferrer" className="mt-1 inline-block text-sm underline underline-offset-4">
+                View in Workfront
+              </a>
+            )}
           </div>
         </div>
       </div>
